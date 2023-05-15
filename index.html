@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Noti Center</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #notification-container {
+    position: fixed;
+    bottom: 220px;
+    left: 3%;
+    z-index: 9999;
+}
+
+
+        .notification {
+            display: flex;
+            flex-direction: column;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .notification .title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .success {
+            background-color: #5cb85c;
+        }
+
+        .error {
+            background-color: #d9534f;
+        }
+    </style>
+</head>
+<body>
+    <div id="notification-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function(event) {
+            window.addEventListener('message', function(event) {
+                if (event.data.type === 'showNotification') {
+                    var notificationElement = document.createElement('div');
+                    notificationElement.classList.add('notification');
+                    notificationElement.classList.add(event.data.style);
+                    notificationElement.innerHTML = '<div class="title">' + event.data.title + '</div><div class="message">' + event.data.message + '</div>';
+
+                    document.getElementById('notification-container').appendChild(notificationElement);
+
+                    setTimeout(function() {
+                        notificationElement.remove();
+                        window.postMessage({
+                            type: 'hideNotification',
+                            id: event.data.id
+                        }, '*');
+                    }, event.data.duration);
+                } else if (event.data.type === 'hideNotification') {
+                    var notificationElement = document.getElementById('notification-' + event.data.id);
+                    if (notificationElement) {
+                        notificationElement.remove();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
