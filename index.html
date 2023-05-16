@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title> Noti Center</title>
+    <title>Noti Center</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,12 +11,11 @@
         }
 
         #notification-container {
-    position: fixed;
-    bottom: 220px;
-    left: 3%;
-    z-index: 9999;
-}
-
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 9999;
+        }
 
         .notification {
             display: flex;
@@ -26,6 +25,14 @@
             padding: 10px;
             margin-bottom: 10px;
             border-radius: 5px;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateX(100%);
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
         }
 
         .notification .title {
@@ -57,12 +64,19 @@
 
                     document.getElementById('notification-container').appendChild(notificationElement);
 
+                    void notificationElement.offsetWidth;
+
+                    notificationElement.classList.add('show');
+
                     setTimeout(function() {
-                        notificationElement.remove();
-                        window.postMessage({
-                            type: 'hideNotification',
-                            id: event.data.id
-                        }, '*');
+                        notificationElement.classList.remove('show');
+                        setTimeout(function() {
+                            notificationElement.remove();
+                            window.postMessage({
+                                type: 'hideNotification',
+                                id: event.data.id
+                            }, '*');
+                        }, 300); 
                     }, event.data.duration);
                 } else if (event.data.type === 'hideNotification') {
                     var notificationElement = document.getElementById('notification-' + event.data.id);
