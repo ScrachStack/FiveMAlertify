@@ -11,3 +11,4 @@ client_scripts { -- this is how u can use our script  in your script!
 
 --showNotification(style, title, message, duration)
 ```
+https://discord.gg/cfxdev
